@@ -1,0 +1,28 @@
+{
+  "name": "sw-delta",
+  "version": "0.0.0",
+  "description": "Incremental download technology for web static assets base on Service Workers",
+  "main": "serverside/index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "keywords": [
+    "serviceWorkers",
+    "performance",
+    "webperf",
+    "incremental",
+    "delta",
+    "versionning"
+  ],
+  "author": "Gaël Métais",
+  "license": "MIT",
+  "dependencies": {
+    "diff-match-patch": "1.0.0",
+    "googlediff": "0.1.0",
+    "q": "1.4.1"
+  },
+  "devDependencies": {
+    "chai": "3.2.0",
+    "mocha": "2.3.0"
+  }
+}
