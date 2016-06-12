@@ -2,8 +2,8 @@ var expect          = require('chai').expect;
 var fs              = require('fs');
 var path            = require('path');
 
-var deltaCalculator = require('../serverside/deltaCalculator.js');
-var deltaApplier    = require('../clientside/deltaApplier.js');
+var deltaCalculator = require('../../serverside/deltaCalculator.js');
+var deltaApplier    = require('../../clientside/deltaApplier.js');
 
 describe('DeltaCalculator and DeltaApplier', function() {
   

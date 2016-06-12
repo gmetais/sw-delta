@@ -1,9 +1,9 @@
 var expect          = require('chai').expect;
 var fs              = require('fs');
 var path            = require('path');
-var SwDelta         = require('../serverside/index.js');
+var SwDelta         = require('../../serverside/index.js');
 
-describe('SwDelta', function() {
+describe('Server Index', function() {
   
     describe('the SwDelta module', function() {
 

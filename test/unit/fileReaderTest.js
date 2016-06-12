@@ -1,7 +1,7 @@
 var expect          = require('chai').expect;
 var fs              = require('fs');
 var path            = require('path');
-var fileReader     = require('../serverside/fileReader.js');
+var fileReader     = require('../../serverside/fileReader.js');
 
 describe('FileReader', function() {
   

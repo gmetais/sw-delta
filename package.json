@@ -4,7 +4,7 @@
   "description": "Incremental download technology for web static assets base on Service Workers",
   "main": "serverside/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec"
+    "test": "./node_modules/.bin/mocha test/unit --reporter spec"
   },
   "keywords": [
     "serviceWorkers",

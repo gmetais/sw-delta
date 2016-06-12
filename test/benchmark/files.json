@@ -1,0 +1,24 @@
+{
+    "files": [
+        {
+            "oldFile": "test/fixtures/angular.1.4.4-min.js",
+            "newFile": "test/fixtures/angular.1.4.5-min.js"
+        },
+        {
+            "oldFile": "test/fixtures/angular.1.4.4.js",
+            "newFile": "test/fixtures/angular.1.4.5.js"
+        },
+        {
+            "oldFile": "test/fixtures/small-text-1.txt",
+            "newFile": "test/fixtures/small-text-2.txt"
+        },
+        {
+            "oldFile": "test/fixtures/bootstrap.3.3.4.css",
+            "newFile": "test/fixtures/bootstrap.3.3.5.css"
+        },
+        {
+            "oldFile": "test/fixtures/bootstrap.3.3.4-min.css",
+            "newFile": "test/fixtures/bootstrap.3.3.5-min.css"
+        }
+    ]
+}
