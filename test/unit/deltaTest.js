@@ -48,8 +48,8 @@ describe('DeltaCalculator and DeltaApplier', function() {
         });
 
         it('creates a delta for a huge non-minified file then applies it', function() {
-            var angular_1_4_4 = fs.readFileSync(path.join(__dirname, 'fixtures/angular.1.4.4.js'), 'utf-8');
-            var angular_1_4_5 = fs.readFileSync(path.join(__dirname, 'fixtures/angular.1.4.5.js'), 'utf-8');
+            var angular_1_4_4 = fs.readFileSync(path.join(__dirname, '../fixtures/angular.1.4.4.js'), 'utf-8');
+            var angular_1_4_5 = fs.readFileSync(path.join(__dirname, '../fixtures/angular.1.4.5.js'), 'utf-8');
 
             var delta = deltaCalculator.getDelta(angular_1_4_4, angular_1_4_5);
             var newString = deltaApplier.applyDelta(angular_1_4_4, delta);
@@ -58,8 +58,8 @@ describe('DeltaCalculator and DeltaApplier', function() {
         });
 
         it('creates a delta for a huge minified file then applies it', function() {
-            var angular_1_4_4 = fs.readFileSync(path.join(__dirname, 'fixtures/angular.1.4.4-min.js'), 'utf-8');
-            var angular_1_4_5 = fs.readFileSync(path.join(__dirname, 'fixtures/angular.1.4.5-min.js'), 'utf-8');
+            var angular_1_4_4 = fs.readFileSync(path.join(__dirname, '../fixtures/angular.1.4.4-min.js'), 'utf-8');
+            var angular_1_4_5 = fs.readFileSync(path.join(__dirname, '../fixtures/angular.1.4.5-min.js'), 'utf-8');
 
             var delta = deltaCalculator.getDelta(angular_1_4_4, angular_1_4_5);
             var newString = deltaApplier.applyDelta(angular_1_4_4, delta);

@@ -28,9 +28,9 @@ describe('FileReader', function() {
     describe('the "readFile" function', function() {
 
         it('succeeds succesfully', function(done) {
-            var smallText1Content = fs.readFileSync(path.join(__dirname, 'fixtures/small-text-1.txt'), 'utf-8');
+            var smallText1Content = fs.readFileSync(path.join(__dirname, '../fixtures/small-text-1.txt'), 'utf-8');
             
-            fileReader.readFile(path.join(__dirname, 'fixtures/small-text.txt'), 1)
+            fileReader.readFile(path.join(__dirname, '../fixtures/small-text.txt'), 1)
 
             .then(function(response) {
                 expect(response).to.equal(smallText1Content);

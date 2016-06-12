@@ -74,10 +74,10 @@ describe('Server Index', function() {
     describe('the "get" function sends', function() {
 
         it('the entire file if no currentVersion is set', function(done) {
-            var smallText1Content = fs.readFileSync(path.join(__dirname, 'fixtures/small-text-1.txt'), 'utf8');
+            var smallText1Content = fs.readFileSync(path.join(__dirname, '../fixtures/small-text-1.txt'), 'utf8');
             var swDelta = new SwDelta();
             
-            swDelta.get(path.join(__dirname, 'fixtures/small-text.txt'), '1')
+            swDelta.get(path.join(__dirname, '../fixtures/small-text.txt'), '1')
 
             .then(function(response) {
                 expect(response).to.have.a.property('code').that.equals(200);
@@ -109,11 +109,11 @@ describe('Server Index', function() {
         it('a 500 error if there is another server error', function(done) {
             
             // Change the reading rights of a file to none
-            fs.chmodSync(path.join(__dirname, 'fixtures/chmod222-1.txt'), '222');
+            fs.chmodSync(path.join(__dirname, '../fixtures/chmod222-1.txt'), '222');
 
             var swDelta = new SwDelta();
             
-            swDelta.get(path.join(__dirname, 'fixtures/chmod222.txt'), '1')
+            swDelta.get(path.join(__dirname, '../fixtures/chmod222.txt'), '1')
 
             .then(function(response) {
                 done(response);
@@ -126,15 +126,15 @@ describe('Server Index', function() {
             })
 
             .finally(function() {
-                fs.chmodSync(path.join(__dirname, 'fixtures/chmod222-1.txt'), '777');
+                fs.chmodSync(path.join(__dirname, '../fixtures/chmod222-1.txt'), '777');
             });
         });
 
         it('the entire file if currentVersion file is not found', function(done) {
-            var smallText1Content = fs.readFileSync(path.join(__dirname, 'fixtures/small-text-1.txt'), 'utf8');
+            var smallText1Content = fs.readFileSync(path.join(__dirname, '../fixtures/small-text-1.txt'), 'utf8');
             var swDelta = new SwDelta();
             
-            swDelta.get(path.join(__dirname, 'fixtures/small-text.txt'), '1', '0')
+            swDelta.get(path.join(__dirname, '../fixtures/small-text.txt'), '1', '0')
 
             .then(function(response) {
                 expect(response).to.have.a.property('code').that.equals(200);
@@ -148,10 +148,10 @@ describe('Server Index', function() {
         });
 
         it('the entire file if askedVersion file is not found', function(done) {
-            var smallText2Content = fs.readFileSync(path.join(__dirname, 'fixtures/small-text-2.txt'), 'utf8');
+            var smallText2Content = fs.readFileSync(path.join(__dirname, '../fixtures/small-text-2.txt'), 'utf8');
             var swDelta = new SwDelta();
             
-            swDelta.get(path.join(__dirname, 'fixtures/small-text.txt'), '3', '2')
+            swDelta.get(path.join(__dirname, '../fixtures/small-text.txt'), '3', '2')
 
             .then(function(response) {
                 expect(response).to.have.a.property('code').that.equals(200);
@@ -167,7 +167,7 @@ describe('Server Index', function() {
         it('a 404 error if both files are not found', function(done) {
             var swDelta = new SwDelta();
             
-            swDelta.get(path.join(__dirname, 'fixtures/small-text.txt'), '4', '3')
+            swDelta.get(path.join(__dirname, '../fixtures/small-text.txt'), '4', '3')
 
             .then(function(response) {
                 done(response);
@@ -183,7 +183,7 @@ describe('Server Index', function() {
         it('the delta if everything was alright', function(done) {
             var swDelta = new SwDelta();
             
-            swDelta.get(path.join(__dirname, 'fixtures/small-text.txt'), '2', '1')
+            swDelta.get(path.join(__dirname, '../fixtures/small-text.txt'), '2', '1')
 
             .then(function(response) {
                 try {
