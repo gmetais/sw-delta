@@ -1,87 +1,131 @@
 var expect          = require('chai').expect;
 var fs              = require('fs');
 var path            = require('path');
-var SwDelta         = require('../../serverside/index.js');
+var swDelta         = require('../../serverside/index.js');
 
 describe('Server Index', function() {
   
-    describe('the SwDelta module', function() {
-
-        it('is a constructor', function() {
-            expect(SwDelta).to.be.a('function');
-        });
-
-        it('can be instanciated', function() {
-            var swDelta = new SwDelta();
+    describe('the swDelta module', function() {
+        it('is an object', function() {
             expect(swDelta).to.be.an('object');
         });
 
-        
+        it('has a getDelta function', function() {
+            expect(swDelta).to.have.a.property('getDelta').that.is.a('function');
+        });
     });
 
-    describe('the "get" function fails', function() {
+    describe('the "getDelta" function', function() {
+        it('returns a promise', function() {
+            expect(swDelta.getDelta()).to.have.a.property('then').that.is.a('function');
+            expect(swDelta.getDelta()).to.have.a.property('catch').that.is.a('function');
+        })
+    });
 
-        it('if the filePath parameters is missing', function(done) {
-            var swDelta = new SwDelta();
-            
-            swDelta.get()
+    describe('the "getDelta" function fails', function() {
+
+        it('if the askedFilePath parameters is missing', function(done) {
+            swDelta.getDelta()
 
             .then(function(response) {
                 done(response);
             })
 
-            .fail(function(error) {
-                expect(error).to.have.a.property('code').that.equals(400);
-                expect(error).to.have.a.property('message').that.equals('Bad request: missing filepath');
-                done();
+            .catch(function(error) {
+                try {
+                    expect(error).to.have.a.property('statusCode').that.equals(400);
+                    expect(error).to.have.a.property('status').that.equals('Bad request: missing askedFilePath');
+                    done();
+                } catch(err) {
+                    done(err);
+                }
             });
         });
 
-        it('if the filePath parameters is empty', function(done) {
-            var swDelta = new SwDelta();
-            
-            swDelta.get('')
+        it('if the askedFilePath parameters is empty', function(done) {
+            swDelta.getDelta('')
 
             .then(function(response) {
                 done(response);
             })
 
             .fail(function(error) {
-                expect(error).to.have.a.property('code').that.equals(400);
-                expect(error).to.have.a.property('message').that.equals('Bad request: missing filepath');
-                done();
+                try {
+                    expect(error).to.have.a.property('statusCode').that.equals(400);
+                    expect(error).to.have.a.property('status').that.equals('Bad request: missing askedFilePath');
+                    done();
+                } catch(err) {
+                    done(err);
+                }
             });
         });
 
-        it('if the two versions asked are equal', function(done) {
-            var swDelta = new SwDelta();
-            
-            swDelta.get('whatever', '1234', '1234')
+        it('if the cachedFilePath parameters is missing', function(done) {
+            swDelta.getDelta('some path')
+
+            .then(function(response) {
+                done(response);
+            })
+
+            .catch(function(error) {
+                try {
+                    expect(error).to.have.a.property('statusCode').that.equals(400);
+                    expect(error).to.have.a.property('status').that.equals('Bad request: missing cachedFilePath');
+                    done();
+                } catch(err) {
+                    done(err);
+                }
+            });
+        });
+
+        it('if the cachedFilePath parameters is empty', function(done) {
+            swDelta.getDelta('some path', '')
 
             .then(function(response) {
                 done(response);
             })
 
             .fail(function(error) {
-                expect(error).to.have.a.property('code').that.equals(400);
-                expect(error).to.have.a.property('message').that.equals('Bad request: identical versions asked');
-                done();
+                try {
+                    expect(error).to.have.a.property('statusCode').that.equals(400);
+                    expect(error).to.have.a.property('status').that.equals('Bad request: missing cachedFilePath');
+                    done();
+                } catch(err) {
+                    done(err);
+                }
             });
         });
 
     });
 
-    describe('the "get" function sends', function() {
+    describe('the "getDelta" function sends', function() {
 
-        it('the entire file if no currentVersion is set', function(done) {
+        it('an empty diff if the two versions asked are equal', function(done) {
+            swDelta.getDelta(path.join(__dirname, '../fixtures/small-text-1.txt'), path.join(__dirname, '../fixtures/small-text-1.txt'))
+
+            .then(function(response) {
+                try {
+                    expect(response).to.have.a.property('body').that.equals('{}');
+                    expect(response).to.have.a.property('contentType').that.equals('text/sw-delta');
+                    done();
+                } catch(err) {
+                    done(err);
+                }
+            })
+
+            .fail(function(error) {
+                done(error);
+            });
+        });
+
+        it('the entire asked file if the cached file is not found', function(done) {
             var smallText1Content = fs.readFileSync(path.join(__dirname, '../fixtures/small-text-1.txt'), 'utf8');
-            var swDelta = new SwDelta();
             
-            swDelta.get(path.join(__dirname, '../fixtures/small-text.txt'), '1')
+            swDelta.getDelta(path.join(__dirname, '../fixtures/small-text-1.txt'), path.join(__dirname, '../fixtures/small-text-999.txt'))
 
             .then(function(response) {
-                expect(response).to.have.a.property('code').that.equals(200);
                 expect(response).to.have.a.property('body').that.equals(smallText1Content);
+                expect(response).to.have.a.property('contentType').that.equals('text/plain');
                 done();
             })
 
@@ -90,18 +134,32 @@ describe('Server Index', function() {
             });
         });
 
-        it('a 404 error if not currentVersion and the askedVersion is not found', function(done) {
-            var swDelta = new SwDelta();
+        it('the entire cached file if the asked file is not found', function(done) {
+            var smallText1Content = fs.readFileSync(path.join(__dirname, '../fixtures/small-text-1.txt'), 'utf8');
             
-            swDelta.get(path.join(__dirname, 'does-not-exist.js'), '1')
+            swDelta.getDelta(path.join(__dirname, '../fixtures/small-text-999.txt'), path.join(__dirname, '../fixtures/small-text-1.txt'))
+
+            .then(function(response) {
+                expect(response).to.have.a.property('body').that.equals(smallText1Content);
+                expect(response).to.have.a.property('contentType').that.equals('text/plain');
+                done();
+            })
+
+            .fail(function(error) {
+                done(error);
+            });
+        });
+
+        it('a 404 error if both files can\'t be found', function(done) {
+            swDelta.getDelta(path.join(__dirname, 'does-not-exist-1.js'), path.join(__dirname, 'does-not-exist-2.js'))
 
             .then(function(response) {
                 done(response);
             })
 
             .fail(function(error) {
-                expect(error).to.have.a.property('code').that.equals(404);
-                expect(error).to.have.a.property('message').that.equals('Not found');
+                expect(error).to.have.a.property('statusCode').that.equals(404);
+                expect(error).to.have.a.property('status').that.equals('Not found');
                 done();
             });
         });
@@ -111,18 +169,20 @@ describe('Server Index', function() {
             // Change the reading rights of a file to none
             fs.chmodSync(path.join(__dirname, '../fixtures/chmod222-1.txt'), '222');
 
-            var swDelta = new SwDelta();
-            
-            swDelta.get(path.join(__dirname, '../fixtures/chmod222.txt'), '1')
+            swDelta.getDelta(path.join(__dirname, '../fixtures/chmod222-1.txt'), path.join(__dirname, '../fixtures/chmod222-1.txt'))
 
             .then(function(response) {
                 done(response);
             })
 
             .fail(function(error) {
-                expect(error).to.have.a.property('code').that.equals(500);
-                expect(error).to.have.a.property('message').that.have.string('Internal Server Error: EACCES');
-                done();
+                try {
+                    expect(error).to.have.a.property('statusCode').that.equals(500);
+                    expect(error).to.have.a.property('status').that.have.string('Internal Server Error: EACCES');
+                    done();
+                } catch(err) {
+                    done(err);
+                }
             })
 
             .finally(function() {
@@ -130,65 +190,13 @@ describe('Server Index', function() {
             });
         });
 
-        it('the entire file if currentVersion file is not found', function(done) {
-            var smallText1Content = fs.readFileSync(path.join(__dirname, '../fixtures/small-text-1.txt'), 'utf8');
-            var swDelta = new SwDelta();
-            
-            swDelta.get(path.join(__dirname, '../fixtures/small-text.txt'), '1', '0')
-
-            .then(function(response) {
-                expect(response).to.have.a.property('code').that.equals(200);
-                expect(response).to.have.a.property('body').that.equals(smallText1Content);
-                done();
-            })
-
-            .fail(function(error) {
-                done(error);
-            });
-        });
-
-        it('the entire file if askedVersion file is not found', function(done) {
-            var smallText2Content = fs.readFileSync(path.join(__dirname, '../fixtures/small-text-2.txt'), 'utf8');
-            var swDelta = new SwDelta();
-            
-            swDelta.get(path.join(__dirname, '../fixtures/small-text.txt'), '3', '2')
-
-            .then(function(response) {
-                expect(response).to.have.a.property('code').that.equals(200);
-                expect(response).to.have.a.property('body').that.equals(smallText2Content);
-                done();
-            })
-
-            .fail(function(error) {
-                done(error);
-            });
-        });
-
-        it('a 404 error if both files are not found', function(done) {
-            var swDelta = new SwDelta();
-            
-            swDelta.get(path.join(__dirname, '../fixtures/small-text.txt'), '4', '3')
-
-            .then(function(response) {
-                done(response);
-            })
-
-            .fail(function(error) {
-                expect(error).to.have.a.property('code').that.equals(404);
-                expect(error).to.have.a.property('message').that.equals('Not found');
-                done();
-            });
-        });
-
         it('the delta if everything was alright', function(done) {
-            var swDelta = new SwDelta();
-            
-            swDelta.get(path.join(__dirname, '../fixtures/small-text.txt'), '2', '1')
+            swDelta.getDelta(path.join(__dirname, '../fixtures/small-text-1.txt'), path.join(__dirname, '../fixtures/small-text-2.txt'))
 
             .then(function(response) {
                 try {
-                    expect(response).to.have.a.property('code').that.equals(200);
                     expect(response).to.have.a.property('body').that.is.a('String');
+                    expect(response).to.have.a.property('contentType').that.equals('text/sw-delta');
                     done();
                 } catch(err) {
                     done(err);

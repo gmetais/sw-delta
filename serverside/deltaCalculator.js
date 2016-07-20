@@ -63,7 +63,7 @@ var DeltaCalculator = function() {
         // Spaces are trimmed, so it looks like this:
         //  {"8":"-1","10":"-1","11":"+th","14":"+r","18":"-1","19":"+x"}
 
-        // It's probably not the less verbose format, but it's ok with gzip compression
+        // It's probably not the less verbose format, but it's correct after gzip compression
 
         return JSON.stringify(diffResultTable);
     };

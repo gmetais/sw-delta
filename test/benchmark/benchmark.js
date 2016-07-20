@@ -81,7 +81,7 @@ function testOneFilePromise(file) {
 
 Q.all(filesToTest.files.map(testOneFilePromise))
 
-    .then(function(results) {
+    .then(function() {
         console.log('\nBenchmark is complete!');
         console.log('Total server time: ' + totalServerTime + 'ms');
         console.log('Total client time: ' + totalClientTime + 'ms');

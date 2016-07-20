@@ -1,96 +1,91 @@
 var Q                   = require('q');
-var fileReader          = require('./fileReader');
+var fs                  = require('fs');
+var mime                = require('mime');
+
 var deltaCalculator     = require('./deltaCalculator');
 
 
-module.exports = function SwDelta(settings) {
+var SwDelta = function() {
     'use strict';
     
-    //var rootUrl = settings.rootUrl || '';
-
-    this.get = function(filePath, askedVersion, currentVersion) {
-        if (!filePath || filePath === '') {
-            return Q.reject(missingFilePathError());
-        }
-
-        if (askedVersion === currentVersion) {
-            return Q.reject(sameVersionError());
-        }
-
+    this.getDelta = function(askedFilePath, cachedFilePath) {
         var deferred = Q.defer();
 
-        // First time the file is asked
-        if (!currentVersion || currentVersion === '') {
-            
-            fileReader.readFile(filePath, askedVersion)
-
-            .then(function(askedFileContent) {
-                deferred.resolve(success(askedFileContent));
-            })
-
-            .fail(function(error) {
-                deferred.reject(fileReadingError(error));
+        if (!askedFilePath || askedFilePath === '') {
+            return Q.reject({
+                statusCode: 400,
+                status: 'Bad request: missing askedFilePath'
             });
+        }
+        if (!cachedFilePath || cachedFilePath === '') {
+            return Q.reject({
+                statusCode: 400,
+                status: 'Bad request: missing cachedFilePath'
+            });
+        }
 
-        } else {
+        // The allSettled method waits for both promises to complete
+        Q.allSettled([
+            Q.nfcall(fs.readFile, askedFilePath, 'utf-8'),
+            Q.nfcall(fs.readFile, cachedFilePath, 'utf-8')
+        ])
 
-            // Not the first time
-            Q.allSettled([
-                fileReader.readFile(filePath, askedVersion),
-                fileReader.readFile(filePath, currentVersion)
-            ]).spread(function(askedFilePromise, currentFilePromise) {
+        .spread(function(askedFilePromise, cachedFilePromise) {
 
-                if (askedFilePromise.state === 'rejected' && currentFilePromise.state === 'rejected') {
-                    deferred.reject(fileReadingError(askedFilePromise.reason));
-                } else if (askedFilePromise.state === 'rejected') {
-                    deferred.resolve(success(currentFilePromise.value));
-                } else if (currentFilePromise.state === 'rejected') {
-                    deferred.resolve(success(askedFilePromise.value));
-                } else {
-                    var delta = deltaCalculator.getDelta(currentFilePromise.value, askedFilePromise.value);
-                    deferred.resolve(success(delta));
+            if (askedFilePromise.state === 'rejected' && cachedFilePromise.state === 'rejected') {
+                console.log('both files not found: ' + askedFilePath + ' and ' + cachedFilePath);
+                deferred.reject(notFoundResponse(askedFilePromise.reason));
+            } else if (askedFilePromise.state === 'rejected') {
+                console.log('asked file not found: ' + askedFilePath);
+                deferred.resolve(fileResponse(cachedFilePromise.value, cachedFilePath));
+            } else if (cachedFilePromise.state === 'rejected') {
+                console.log('cached file not found: ' + cachedFilePath);
+                deferred.resolve(fileResponse(askedFilePromise.value, askedFilePath));
+            } else {
+                var delta = deltaCalculator.getDelta(cachedFilePromise.value, askedFilePromise.value);
+
+                // Check that the diff is not bigger than the asked file:
+                if (delta.length > 0.9 * askedFilePromise.value.length) {
+                    console.log('diff size is too big, returning the asked file instead');
+                    deferred.resolve(fileResponse(askedFilePromise.value, askedFilePath));
+                    return;
                 }
 
-            });
+                deferred.resolve(deltaResponse(delta));
+            }
 
-        }
+        });
 
         return deferred.promise;
     };
 
-
-    function success(body) {
+    function deltaResponse(delta) {
         return {
-            code: 200,
-            body: body
+            body: delta,
+            contentType: 'text/sw-delta'
         };
     }
 
-    function missingFilePathError() {
+    function fileResponse(body, filePath) {
         return {
-            code: 400,
-            message: 'Bad request: missing filepath'
+            body: body,
+            contentType: mime.lookup(filePath)
         };
     }
 
-    function sameVersionError() {
-        return {
-            code: 400,
-            message: 'Bad request: identical versions asked'
-        };
-    }
-
-    function fileReadingError(error) {
+    function notFoundResponse(error) {
         if (error.code === 'ENOENT') {
              return {
-                code: 404,
-                message: 'Not found'
+                statusCode: 404,
+                status: 'Not found'
             };
         }
         
         return {
-            code: 500,
-            message: 'Internal Server Error: ' + error.code
+            statusCode: 500,
+            status: 'Internal Server Error: ' + error.code
         };
     }
 };
+
+module.exports = new SwDelta();

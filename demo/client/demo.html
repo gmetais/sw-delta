@@ -1,0 +1,67 @@
+<html>
+<head>
+    <title>SW-Delta demo</title>
+    <style>
+        .notCompatible, .notActive {
+            display: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: red;
+        }
+        .active {
+            display: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: green;
+        }
+        .bodyNotCompatible .notCompatible {display: block;}
+        .bodyNotActive .notActive {display: block;}
+        .bodyActive .active {display: block;}
+    </style>
+</head>
+<body>
+    <h1>SW-Delta demo</h1>
+
+    <p class="notCompatible">Your browser is not compatible with service workers. Here is a list of compatible browsers: <a href="http://caniuse.com/serviceworkers">caniuse.com/serviceworkers</a></p>
+    <p class="notActive">The service worker is not active, please reload the page.</p>
+    <p class="active">The service worker is active.</p>
+
+    <button id="loadButton">Load version 2.0.0 of the file</button>
+
+    <script>
+        document.body.className = ('serviceWorker' in navigator) ? (navigator.serviceWorker.controller) ? 'bodyActive' : 'bodyNotActive' : 'bodyNotCompatible';
+
+        var loadButton = document.getElementById('loadButton');
+        var versions = ['2.0.0', '2.0.1', '2.0.2', '2.0.3', '2.1.0', '2.1.1', '2.1.2', '2.1.3', '2.1.4', '3.0.0'];
+        var versionIndex = 0;
+
+        changeButtonText();
+
+        loadButton.onclick = function() {
+            loadFile();
+            versionIndex ++;
+            changeButtonText();
+        }
+
+        function changeButtonText() {
+            if (versionIndex >= versions.length) {
+                loadButton.innerHTML = 'No more versions! Clear your cache and reload the page!';
+                loadButton.disabled = true;
+            } else {
+                loadButton.innerHTML = 'Load version (' + versions[versionIndex] + ') of the file';
+            }
+        }
+
+        function loadFile() {
+            var script = document.createElement('script');
+            script.src = '/assets/scripts/jquery-' + versions[versionIndex] + '.js';
+            document.body.appendChild(script);
+        }
+
+        // Interesting part: load the service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw-delta.js');
+        }
+    </script>
+</body>
+</html>
