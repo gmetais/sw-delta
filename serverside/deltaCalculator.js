@@ -6,7 +6,13 @@ var DeltaCalculator = function() {
 
 
     this.getDelta = function(oldString, newString) {
-        
+
+        // Find an unused char as a separator
+        var separator = '§';
+        if (oldString.indexOf(separator) >= 0 || newString.indexOf(separator) >= 0) {
+            separator = '␡';
+        }
+
         // Uses the google-diff-match-patch algorithm
         // It looks good for what we need. Maybe a bit slow on large files.
         // It might be possible to tweak it for better results on minified JS and CSS files.
@@ -31,41 +37,33 @@ var DeltaCalculator = function() {
         //   [ 1, 'x' ],
         //   [ 0, 't. blah blah blah' ] ]
 
-        // This output contains the kept chars and the removed chars. We don't need them.
-        // So we're going to change the format.
+        // Now we're going to change the format to reduce the weight.
+        // For example we don't need the chars that don't change.
 
-        var diffResultTable = {};
+        var diffResult = '';
         var charIndex = 0;
         
         diffTable.forEach(function(line) {
 
             if (line[1].length > 0) {
                 if (line[0] === 1) {
-                    diffResultTable[charIndex] = '+' + line[1];
+                    diffResult += separator + charIndex + '+' + line[1];
+                    charIndex = line[1].length;
                 } else if (line[0] === -1) {
-                    diffResultTable[charIndex] = '-' + line[1].length;
+                    diffResult += separator + charIndex + '-' + line[1].length;
+                    charIndex = line[1].length;
+                } else {
+                    charIndex += line[1].length;
                 }
             }
-
-            charIndex += line[1].length;
         });
 
         // The result now looks like this:
-        //  {
-        //      "8":    "-1",
-        //      "10":   "-1",
-        //      "11":   "+th",
-        //      "14":   "+r",
-        //      "18":   "-1",
-        //      "19":   "+x"
-        //  }
+        //  §8-1§2-1§1+th§3+r§4-1§1+x
 
-        // Spaces are trimmed, so it looks like this:
-        //  {"8":"-1","10":"-1","11":"+th","14":"+r","18":"-1","19":"+x"}
+        // It's probably not the less verbose format, but help is more than welcome!
 
-        // It's probably not the less verbose format, but it's correct after gzip compression
-
-        return JSON.stringify(diffResultTable);
+        return diffResult;
     };
 
 };

@@ -16,8 +16,19 @@ describe('DeltaCalculator and DeltaApplier', function() {
         
     });
 
-    describe('the "applyDelta function', function() {
-        it('creates a delta for a removal then applies it', function() {
+    describe('the "getDelta" and "applyDelta" functions', function() {
+        it('create a delta for the same files than apply it', function() {
+            var oldString = 'Hello world!';
+            var newString = 'Hello world!';
+
+            var delta = deltaCalculator.getDelta(oldString, newString);
+            expect(delta).to.equal('');
+            var newNewString = deltaApplier.applyDelta(oldString, delta);
+
+            expect(newString).to.equal(newNewString);
+        });
+
+        it('create a delta for a removal then apply it', function() {
             var oldString = 'Hello the world!';
             var newString = 'Hello world!';
 
@@ -27,7 +38,7 @@ describe('DeltaCalculator and DeltaApplier', function() {
             expect(newString).to.equal(newNewString);
         });
 
-        it('creates a delta for an addition then applies it', function() {
+        it('create a delta for an addition then apply it', function() {
             var oldString = 'Hello world!';
             var newString = 'Hello the world!';
 
@@ -37,7 +48,7 @@ describe('DeltaCalculator and DeltaApplier', function() {
             expect(newString).to.equal(newNewString);
         });
 
-        it('creates a delta for additions and removals then applies it', function() {
+        it('create a delta for additions and removals then apply it', function() {
             var oldString = 'Hello the world! Welcome!';
             var newString = 'Hello world and other planets! Welcome!';
 
@@ -47,7 +58,7 @@ describe('DeltaCalculator and DeltaApplier', function() {
             expect(newString).to.equal(newNewString);
         });
 
-        it('creates a delta for a huge non-minified file then applies it', function() {
+        it('create a delta for a huge non-minified file then apply it', function() {
             var angular_1_4_4 = fs.readFileSync(path.join(__dirname, '../fixtures/angular.1.4.4.js'), 'utf-8');
             var angular_1_4_5 = fs.readFileSync(path.join(__dirname, '../fixtures/angular.1.4.5.js'), 'utf-8');
 
@@ -57,7 +68,7 @@ describe('DeltaCalculator and DeltaApplier', function() {
             expect(angular_1_4_5.substr(2000, 1000)).to.equal(newString.substr(2000, 1000));
         });
 
-        it('creates a delta for a huge minified file then applies it', function() {
+        it('create a delta for a huge minified file then apply it', function() {
             var angular_1_4_4 = fs.readFileSync(path.join(__dirname, '../fixtures/angular.1.4.4-min.js'), 'utf-8');
             var angular_1_4_5 = fs.readFileSync(path.join(__dirname, '../fixtures/angular.1.4.5-min.js'), 'utf-8');
 
