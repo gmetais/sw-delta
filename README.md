@@ -14,9 +14,9 @@ It is designed as a progressive enhancement. Browsers that don't support Service
 **Client-side:** a Service Worker intercepts every outgoing request. If the url matches one of the configured routes, than the Service Worker will compare the requested version with the version stored in cache. If an update is needed, the Service Worker will update the url to add the known version as a querystring, like this:
 
 ```
-Asked url:                  http://domain.com/js/main-1.2.0.js
-Version found in cache:     1.1.1
-Updated url:               http://domain.com/js/main-1.2.0.js?cached=1.1.1
+Asked url:          http://domain.com/js/main-1.2.0.js
+Version in cache:   1.1.1
+Updated url:        http://domain.com/js/main-1.2.0.js?cached=1.1.1
 ```
 
 **Server-side:** the sw-delta querystring is recognized. If the server is able to find both versions in its file system, it computes a delta file and sends it to the browser.
@@ -27,41 +27,43 @@ Updated url:               http://domain.com/js/main-1.2.0.js?cached=1.1.1
 ## Questions/Answers
 
 #### Is it production ready?
-No, I don't think so. This is just the beginning of this project. I'm looking for companies that wish to beta-test it.
+No, I don't think so. This is just the beginning of this project. I'm looking for beta-testers.
 
 #### What browsers are supported?
-Chrome, Firefox and Opera. This is 59% of navigators, according to [Can I Use](http://caniuse.com/#feat=serviceworkers).
+Chrome, Firefox and Opera. This is 59% of compatible browsers, according to [Can I Use](http://caniuse.com/#feat=serviceworkers).
 
-#### Is it easy to install sw-delta client-side?
-The client-side should not be a problem if your website is on HTTPS (this is a limitation built in the Service Worker API). You only need to load the service worker and it deals with everything. No other change is required on to the page.
+#### Is it easy to install, client-side?
+The client-side should not be a problem. Your website needs to be served on HTTPS, this is a limitation built in the Service Worker API. Then you only need to load the service worker and it deals with everything. No other change is required on to the page.
 
-#### Is it easy to install sw-delta server-side?
-It's a bit more complicated. Your server needs to be able to handle delta requests and calculate them.
+#### Is it easy to install, server-side?
+It's a bit more complicated. Your server needs to be able to handle delta requests and to compute them.
 
 #### What server-side technologies are compatible?
-For the moment, I only wrote a NodeJS library. My wish is to see some other libraries developped for other languages. It could also become Apache or Nginx modules.
+For the moment, I only wrote a NodeJS library. But any other language should be able to run sw-delta. It could also become a module for Apache and Nginx.
 
-#### How fast is the delta generation server-side?
+#### How fast is the delta generation, server-side?
 It's slow. Calculating the delta for file such as `angular.1.4.5-min.js` (143KB) takes 500ms. The delta files should not be re-generated for every user. You'd better use sw-delta behind a reverse proxy (or a CDN) that is able to cache the generated delta files.
 
-#### How fast does it take to apply the delta client-side?
-This is pretty fast. The same `angular.1.4.5-min.js` file only takes 3ms to be regenerated.
+#### How fast does it take to apply the delta, client-side?
+This is pretty fast. The same `angular.1.4.5-min.js` file only takes 3ms to be regenerated from the delta.
 
 #### What's the size of a delta file?
 I've built a quick benchmark that measures the size of the delta files, on a few famous libraries (testing for example jQuery being upgraded from v2.0.0 to v2.0.1). **The average delta file is 14% of the normal file.**
 
 #### What's the algorithm behind the delta file computation?
-I'm using the [diff-match-patch](https://github.com/ForbesLindesay/diff-match-patch) npm module, which wraps google-diff-match-patch[https://code.google.com/p/google-diff-match-patch/]. Then I compress the output with a home-made format. I'm pretty sure some improvements can be achieved on speed and weight, don't hesitate if you have some ideas.
+I'm using the [diff-match-patch](https://github.com/ForbesLindesay/diff-match-patch) npm module, which is a NodeJS wrapper around [google-diff-match-patch](https://code.google.com/p/google-diff-match-patch/). Then I compress the output in a home-made format. I'm pretty sure some improvements can be achieved on the speed and weight, don't hesitate if you have some ideas and use the [benchmark.js](/test/benchmark/benchmark.js) script to test them.
 
-#### Once installed on my project, how can I see it in action/debug?
-Using Chrome's Network panel, you are able to see one request from the page to the Service Worker, and another request from the Service Worker to the server. Firefox is not as good as Chrome for the moment.
+#### Once installed on my project, how can I debug/see it in action?
+Using Chrome's Network panel, you are able to see one request from the page to the Service Worker, and another request from the Service Worker to the server. Firefox is not as good as Chrome, it does not show the requests from the SW.
 
-#### Why does sw-delta use IndexedDB instead of the Cache API in the Service Worker?
-Because it does not allow to modify a file before storing it into the cache.
+#### Why does sw-delta use IndexedDB instead of the Cache API in its Service Worker?
+Because the Cache API does not allow the modification of a file before storing it into the cache.
 
-#### So I need to keep all my old files versions?
+#### Do I need to keep all my old files versions on my server?
 Yes, it is best to keep them all. But it won't stop working if some files get deleted so you can delete the oldest ones if you need some disk space.
 
+#### How should I name/version my files to be compatible with sw-delta?
+Currently, the only supported format is `name-version.ext`. The version can be any string. I recommend changing the version only when the content is modified, to avoid unnecessary requests. An md5 hash of the file makes a perfect version number.
 
 
 ## Author
