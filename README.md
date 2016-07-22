@@ -63,7 +63,11 @@ Because the Cache API does not allow the modification of a file before storing i
 Yes, it is best to keep them all. But it won't stop working if some files get deleted so you can delete the oldest ones if you need some disk space.
 
 #### How should I name/version my files to be compatible with sw-delta?
-Currently, the only supported format is `name-version.ext`. The version can be any string. I recommend changing the version only when the content is modified, to avoid unnecessary requests. An md5 hash of the file makes a perfect version number.
+Currently, the only supported format is `/path/name-version.ext`. The version can be any string. I recommend changing the version only when the content is modified, to avoid unnecessary requests. An md5 hash of the file makes a perfect version number.
+
+
+## Help is needed
+Any kind of help is more than welcome. If your use case requires a modification of the source code, than you're probably not the only one: please open an issue or a pull-request ;)
 
 
 ## Author
