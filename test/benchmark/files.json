@@ -19,6 +19,42 @@
         {
             "oldFile": "test/fixtures/bootstrap.3.3.4-min.css",
             "newFile": "test/fixtures/bootstrap.3.3.5-min.css"
+        },
+        {
+            "oldFile": "test/fixtures/jquery-2.0.0.js",
+            "newFile": "test/fixtures/jquery-2.0.1.js"
+        },
+        {
+            "oldFile": "test/fixtures/jquery-2.0.1.js",
+            "newFile": "test/fixtures/jquery-2.0.2.js"
+        },
+        {
+            "oldFile": "test/fixtures/jquery-2.0.2.js",
+            "newFile": "test/fixtures/jquery-2.0.3.js"
+        },
+        {
+            "oldFile": "test/fixtures/jquery-2.0.3.js",
+            "newFile": "test/fixtures/jquery-2.1.0.js"
+        },
+        {
+            "oldFile": "test/fixtures/jquery-2.1.0.js",
+            "newFile": "test/fixtures/jquery-2.1.1.js"
+        },
+        {
+            "oldFile": "test/fixtures/jquery-2.1.1.js",
+            "newFile": "test/fixtures/jquery-2.1.2.js"
+        },
+        {
+            "oldFile": "test/fixtures/jquery-2.1.2.js",
+            "newFile": "test/fixtures/jquery-2.1.3.js"
+        },
+        {
+            "oldFile": "test/fixtures/jquery-2.1.3.js",
+            "newFile": "test/fixtures/jquery-2.1.4.js"
+        },
+        {
+            "oldFile": "test/fixtures/jquery-2.1.4.js",
+            "newFile": "test/fixtures/jquery-3.0.0.js"
         }
     ]
 }
