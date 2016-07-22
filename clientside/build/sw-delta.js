@@ -3,12 +3,23 @@ var DeltaApplier = function() {
     'use strict';
 
     this.applyDelta = function(oldString, delta) {
-        var diffTable = JSON.parse(delta);
+
+        // Extract the separator, which is the first char in the delta
+        var separator = delta.substr(0, 1);
+        var diffArray = delta.split(separator);
+        diffArray.shift();
+
         var newString = '';
         var oldStringCursor = 0;
+        var charIndex = 0;
         var deletedChars = 0;
+        var regex = /(\d+)([+-])([\s\S]+)/m;
+        var adding, chunks, numberOfCharsToRemove;
 
-        for (var charIndex in diffTable) {
+        for (var i = 0, max = diffArray.length; i < max; i++) {
+
+            chunks = regex.exec(diffArray[i]);
+            charIndex += parseInt(chunks[1], 10);
             
             var numberOfMissingChars = charIndex - deletedChars - newString.length;
             if (numberOfMissingChars > 0) {
@@ -16,15 +27,15 @@ var DeltaApplier = function() {
                 oldStringCursor += numberOfMissingChars;
             }
 
-            var adding = diffTable[charIndex][0] === '+';
+            adding = (chunks[2] === '+');
+
             if (adding) {
-                var charsToAdd = diffTable[charIndex].substring(1);
-                newString += charsToAdd;
+                newString += chunks[3];
             } else {
                 // Removing
-                var numberOfCharsToRemove = parseInt(diffTable[charIndex].substring(1), 10);
-                oldStringCursor += numberOfCharsToRemove;
+                numberOfCharsToRemove = parseInt(chunks[3], 10);
                 deletedChars += numberOfCharsToRemove;
+                oldStringCursor += numberOfCharsToRemove;
             }
         }
 
