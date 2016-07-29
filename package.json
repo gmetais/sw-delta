@@ -1,7 +1,7 @@
 {
   "name": "sw-delta",
   "version": "0.0.0",
-  "description": "Incremental download technology for web static assets base on Service Workers",
+  "description": "A browser cache that only downloads the diff of modified files",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha test/unit --reporter spec",
