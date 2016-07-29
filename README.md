@@ -4,9 +4,7 @@ Continuous delivery is great, but it comes at a price on performances. The more 
 
 ## Service Workers to the rescue
 
-**sw-delta** is a project that makes the browser **download only the delta** (=diff) between the previously cached file and the required version of the file. It is based on the Service Worker API.
-
-It is designed as a progressive enhancement. Browsers that don't support Service Workers will redownload the full file as they've always done, while modern browsers will be able to ask for the delta only.
+**sw-delta** is a project that makes the browser **download only the delta ( = diff = incremental download)** between the previously cached file and the required version of the file. It is based on the Service Worker API.
 
 
 ## How does it work?
@@ -41,10 +39,12 @@ You need to install the project both client-side and server-side.
 ## Questions/Answers
 
 #### Is it production ready?
-No, I don't think so. This is just the beginning of this project. I'm looking for beta-testers.
+No, I don't think so. This is just the beginning of the project. I'm looking for beta-testers.
 
 #### What browsers are supported?
 Chrome, Firefox and Opera. This is 59% of compatible browsers, according to [Can I Use](http://caniuse.com/#feat=serviceworkers).
+
+It is designed as a progressive enhancement. Browsers that don't support Service Workers will redownload the full file as they've always done, while modern browsers will be able to ask for the delta only.
 
 #### Is it easy to install, client-side?
 The client-side should not be a problem. Your website needs to be served on HTTPS, this is a limitation built in the Service Worker API. Then you only need to load the service worker and it deals with everything. No other change is required on to the page.
@@ -53,16 +53,16 @@ The client-side should not be a problem. Your website needs to be served on HTTP
 It's a bit more complicated. Your server needs to be able to handle delta requests and to compute them.
 
 #### What server-side technologies are compatible?
-For the moment, I only wrote [the NodeJS library, called sw-delta-nodejs](https://github.com/gmetais/sw-delta-nodejs). But any other language should be able to run sw-delta. It could also become a module for Apache and Nginx.
+For the moment, I only wrote [a NodeJS library, called sw-delta-nodejs](https://github.com/gmetais/sw-delta-nodejs). But any other language should be able to run sw-delta. It could also become a module for Apache and Nginx.
 
 #### How fast is the delta generation, server-side?
-It's slow. Calculating the delta for file such as `angular.1.4.5-min.js` (143KB) takes 500ms. The delta files should not be re-generated for every user. You'd better use sw-delta behind a reverse proxy (or a CDN) that is able to cache the generated delta files.
+It's slow. Calculating the delta for a file such as `angular.1.4.5-min.js` (143KB) takes 500ms. This is why the delta files should not be re-generated for every user and should be cached server-side. The easiest is to use sw-delta behind a reverse proxy (or a CDN).
 
 #### How fast does it take to apply the delta, client-side?
 This is pretty fast. The same `angular.1.4.5-min.js` file only takes 3ms to be regenerated from the delta.
 
 #### What's the size of a delta file?
-I've built a quick benchmark that measures the size of the delta files, on a few famous libraries (testing for example jQuery being upgraded from v2.0.0 to v2.0.1). **The average delta file is 14% of the normal file.**
+I've built a quick benchmark that measures the size of the delta files on a few famous libraries (testing for example jQuery being upgraded from v2.0.0 to v2.0.1). **The average delta file is 14% of the normal file.** But in fact, it all depends how often you deliver and how small are the changes you deliver.
 
 #### What's the algorithm behind the delta file computation?
 I'm using the [diff-match-patch](https://github.com/ForbesLindesay/diff-match-patch) npm module, which is a NodeJS wrapper around [google-diff-match-patch](https://code.google.com/p/google-diff-match-patch/). Then I compress the output in a home-made format. I'm pretty sure some improvements can be achieved on the speed and weight, don't hesitate if you have some ideas and use the [benchmark.js](/test/benchmark/benchmark.js) script to test them.
