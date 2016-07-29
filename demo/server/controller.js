@@ -1,18 +1,13 @@
 var path        = require('path');
-var app         = require('express')();
 var url         = require('url');
-var crypto      = require('crypto');
+var app         = require('express')();
 var compress    = require('compression');
-var swDelta     = require('../../serverside/index');
+var swDelta     = require('sw-delta-nodejs');
 
 app.use(compress());
 
 app.get('/', function (req, res) {
     res.sendFile(path.resolve(__dirname, '../client/demo.html'));
-});
-
-app.get('/sw-delta.js', function (req, res) {
-    res.sendFile(path.resolve(__dirname, '../../clientside/build/sw-delta.js'));
 });
 
 app.get('/assets/scripts/:name-:version.js', function(req, res) {
@@ -51,6 +46,10 @@ app.get('/assets/scripts/:name-:version.js', function(req, res) {
         res.sendFile(path.join(__dirname, '../client', req.url));
     }
 
+});
+
+app.get('/sw-delta.js', function (req, res) {
+    res.sendFile(path.resolve(__dirname, '../client/build/sw-delta.js'));
 });
 
 app.listen(3000, function () {

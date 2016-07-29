@@ -1,5 +1,5 @@
 var expect          = require('chai').expect;
-var SwDelta         = require('../../clientside/index.js');
+var SwDelta         = require('../../index');
 
 describe('Client Index', function() {
   

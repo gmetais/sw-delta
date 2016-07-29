@@ -1,6 +1,8 @@
+
+
 var calmcard        = require('calmcard');
-var deltaApplier    = require('./deltaApplier');
-var IndexedDB       = require('./indexedDB');
+var deltaApplier    = require('./lib/deltaApplier');
+var IndexedDB       = require('./lib/indexedDB');
 
 var SwDelta = function(userSettings) {
     var self = this;

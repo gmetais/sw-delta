@@ -5,8 +5,8 @@ var fs              = require('fs');
 var path            = require('path');
 var Q               = require('q');
 
-var deltaCalculator = require('../../serverside/deltaCalculator.js');
-var deltaApplier    = require('../../clientside/deltaApplier.js');
+var deltaCalculator = require('../../node_modules/sw-delta-nodejs/lib/deltaCalculator.js');
+var deltaApplier    = require('../../lib/deltaApplier.js');
 
 var filesToTest     = require('./files.json');
 

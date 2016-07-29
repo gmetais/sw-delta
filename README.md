@@ -24,6 +24,20 @@ Updated url:        http://domain.com/js/main-1.2.0.js?cached=1.1.1
 **Back to client-side:** the Service Worker generates the requested file from the known old file and the delta file, stores it in cache and sends it to the page.
 
 
+## Installation
+
+You need to install the project both client-side and server-side.
+
+[List of server-side implementations](https://github.com/gmetais/sw-delta/wiki/Server-side-implementations)
+
+[GClient-side installation documentation.](https://github.com/gmetais/sw-delta/wiki/Installation)
+
+
+## API and configuration
+
+[Client-side API documentation.](https://github.com/gmetais/sw-delta/wiki/API)
+
+
 ## Questions/Answers
 
 #### Is it production ready?
@@ -39,7 +53,7 @@ The client-side should not be a problem. Your website needs to be served on HTTP
 It's a bit more complicated. Your server needs to be able to handle delta requests and to compute them.
 
 #### What server-side technologies are compatible?
-For the moment, I only wrote a NodeJS library. But any other language should be able to run sw-delta. It could also become a module for Apache and Nginx.
+For the moment, I only wrote [the NodeJS library, called sw-delta-nodejs](https://github.com/gmetais/sw-delta-nodejs). But any other language should be able to run sw-delta. It could also become a module for Apache and Nginx.
 
 #### How fast is the delta generation, server-side?
 It's slow. Calculating the delta for file such as `angular.1.4.5-min.js` (143KB) takes 500ms. The delta files should not be re-generated for every user. You'd better use sw-delta behind a reverse proxy (or a CDN) that is able to cache the generated delta files.
