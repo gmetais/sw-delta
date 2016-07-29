@@ -30,7 +30,7 @@ You need to install the project both client-side and server-side.
 
 [List of server-side implementations](https://github.com/gmetais/sw-delta/wiki/Server-side-implementations)
 
-[GClient-side installation documentation.](https://github.com/gmetais/sw-delta/wiki/Installation)
+[Client-side installation documentation.](https://github.com/gmetais/sw-delta/wiki/Installation)
 
 
 ## API and configuration
