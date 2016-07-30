@@ -22,18 +22,17 @@ Updated url:        http://domain.com/js/main-1.2.0.js?cached=1.1.1
 **Back to client-side:** the Service Worker generates the requested file from the known old file and the delta file, stores it in cache and sends it to the page.
 
 
-## Installation
+## Installation and configuration
 
 You need to install the project both client-side and server-side.
 
-[List of server-side implementations](https://github.com/gmetais/sw-delta/wiki/Server-side-implementations)
+[List of server-side implementations.](https://github.com/gmetais/sw-delta/wiki/Server-side-implementations)
 
 [Client-side installation documentation.](https://github.com/gmetais/sw-delta/wiki/Installation)
 
-
-## API and configuration
-
 [Client-side API documentation.](https://github.com/gmetais/sw-delta/wiki/API)
+
+
 
 
 ## Questions/Answers
@@ -77,7 +76,7 @@ Because the Cache API does not allow the modification of a file before storing i
 Yes, it is best to keep them all. But it won't stop working if some files get deleted so you can delete the oldest ones if you need some disk space.
 
 #### How should I name/version my files to be compatible with sw-delta?
-Currently, the only supported format is `/path/name-version.ext`. The version can be any string. I recommend changing the version only when the content is modified, to avoid unnecessary requests. An md5 hash of the file makes a perfect version number.
+Currently, the only supported format is `/some/path/name-version.ext`. The version can be any string. I recommend changing the version only when the content is really modified, to avoid unnecessary requests. An md5 hash of the file makes a perfect version number.
 
 
 ## Help is needed
