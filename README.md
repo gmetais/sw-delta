@@ -1,5 +1,5 @@
 
-<img src="./sw-delta.png" alt="sw-delta is an incremental cache for the web. It only downloads the delta between the old file in cache and the new file." style="width: 500px;"></img>
+<img src="./sw-delta.png" alt="sw-delta is an incremental cache for the web. It only downloads the delta between the old file in cache and the new file." width="500"></img>
 
 Continuous delivery is great, but it comes at a price on performances. The more you deliver, the less browsers will use assets they had in cache, because of file versionning. Even if you only changed one letter in a file, it will get downloaded entirely.
 
