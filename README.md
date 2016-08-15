@@ -72,7 +72,7 @@ I'm using the [diff-match-patch](https://github.com/ForbesLindesay/diff-match-pa
 Using Chrome's Network panel, you are able to see one request from the page to the Service Worker, and another request from the Service Worker to the server. Firefox is not as good as Chrome, it does not show the requests from the SW.
 
 #### Why does sw-delta use IndexedDB instead of the Cache API in its Service Worker?
-Because the Cache API does not allow the modification of a file before storing it into the cache.
+~~Because the Cache API does not allow the modification of a file before storing it into the cache.~~ It's actually possible and it will change soon (see issue [#2](https://github.com/gmetais/sw-delta/issues/2)).
 
 #### Do I need to keep all my old files versions on my server?
 Yes, it is best to keep them all. But it won't stop working if some files get deleted so you can delete the oldest ones if you need some disk space.
