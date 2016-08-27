@@ -1,6 +1,6 @@
 {
   "name": "sw-delta",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A browser cache that only downloads the diff of modified files",
   "main": "index.js",
   "scripts": {
